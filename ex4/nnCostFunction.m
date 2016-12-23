@@ -62,24 +62,20 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+Y=zeros(num_labels,m);
+for i=1:m
+    Y(y(i),i)=1;
+end
+a1=[ones(m,1),X]';
+z2=Theta1*a1;
+a2=[ones(1,m);sigmoid(z2)];
+z3=Theta2*a2;
+h=(sigmoid(z3));
+j_m=-Y.*log(h)-(1-Y).*log(1-h);
+J=sum(sum(j_m))/5000;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+regularizedTerms=1/(2*m)*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
+J=J+regularizedTerms;
 % -------------------------------------------------------------
 
 % =========================================================================
