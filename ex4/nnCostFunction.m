@@ -66,17 +66,25 @@ Y=zeros(num_labels,m);
 for i=1:m
     Y(y(i),i)=1;
 end
-a1=[ones(m,1),X]';
-z2=Theta1*a1;
-a2=[ones(1,m);sigmoid(z2)];
-z3=Theta2*a2;
-h=(sigmoid(z3));
-j_m=-Y.*log(h)-(1-Y).*log(1-h);
-J=sum(sum(j_m))/5000;
+A1=[ones(m,1),X]';
+Z2=Theta1*A1;
+A2=[ones(1,m);sigmoid(Z2)];
+Z3=Theta2*A2;
+H=(sigmoid(Z3));
+j_m=-Y.*log(H)-(1-Y).*log(1-H);
+J=sum(sum(j_m))/m;
 
-regularizedTerms=1/(2*m)*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
+regularizedTerms=lambda/(2*m)*(sum(sum(Theta1(:,2:end).^2))+sum(sum(Theta2(:,2:end).^2)));
 J=J+regularizedTerms;
 % -------------------------------------------------------------
+A3=(sigmoid(Z3));
+DELTA3=A3-Y;
+DELTA2=Theta2(:,2:end)'*DELTA3.*sigmoidGradient(Z2);
+Theta2_grad=1/m*(DELTA3*A2');
+Theta1_grad=1/m*(DELTA2*A1');
+% regularized
+Theta2_grad(:,2:end)=Theta2_grad(:,2:end)+lambda/m*Theta2(:,2:end);
+Theta1_grad(:,2:end)=Theta1_grad(:,2:end)+lambda/m*Theta1(:,2:end);
 
 % =========================================================================
 
